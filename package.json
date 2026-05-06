@@ -1,0 +1,12 @@
+{
+  "name": "vizro-media",
+  "version": "1.0.0",
+  "description": "Vizro Media — Professional video ads for local business",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

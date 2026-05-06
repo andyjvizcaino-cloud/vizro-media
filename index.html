@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vizro Media — Professional video ads for local businesses. TikTok, Instagram, and Facebook video ads delivered in 48 hours.">
+    <title>Vizro Media — Video Ads for Local Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ─── Variables ─── */
+        :root {
+            --bg:          #0A1628;
+            --surface:     #1A2332;
+            --surface-r:   #1E2A3D;
+            --surface-hi:  #232F42;
+            --text:        #F0EDE8;
+            --muted:       #7A8699;
+            --muted-light: #9BA8B8;
+            --red:         #E63946;
+            --red-dim:     rgba(230, 57, 70, 0.14);
+            --red-glow:    rgba(230, 57, 70, 0.07);
+            --border:      rgba(240, 237, 232, 0.07);
+            --border-hi:   rgba(240, 237, 232, 0.12);
+
+            --f-head: 'Syne', sans-serif;
+            --f-body: 'Inter', sans-serif;
+
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --fast: 0.18s;
+            --mid:  0.35s;
+
+            --max: 1240px;
+            --pad: clamp(1.5rem, 4vw, 3.5rem);
+        }
+
+        /* ─── Reset ─── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--f-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        a { color: inherit; }
+        img, svg { display: block; max-width: 100%; }
+        button { font-family: inherit; }
+        ::selection { background: var(--red); color: var(--text); }
+
+        /* ─── Nav ─── */
+        #nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 90;
+            padding: 1.5rem var(--pad);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background var(--mid) var(--ease),
+                        backdrop-filter var(--mid) var(--ease),
+                        border-color var(--mid) var(--ease);
+            border-bottom: 1px solid transparent;
+        }
+        #nav.scrolled {
+            background: rgba(10, 22, 40, 0.82);
+            backdrop-filter: blur(16px) saturate(1.4);
+            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            border-bottom-color: var(--border);
+        }
+
+        .nav-logo {
+            font-family: var(--f-head);
+            font-size: 1.1875rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.25rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-size: 0.8125rem;
+            font-weight: 400;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            position: relative;
+            padding-bottom: 2px;
+            transition: color var(--fast);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 1px;
+            background: var(--red);
+            transition: width var(--fast) var(--ease);
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+            z-index: 10;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 1.5px;
+            background: var(--text);
+            border-radius: 1px;
+            transition: transform var(--fast), opacity var(--fast);
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        /* Mobile drawer */
+        .mob-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 95;
+            opacity: 0; pointer-events: none;
+            transition: opacity var(--mid);
+        }
+        .mob-overlay.open { opacity: 1; pointer-events: all; }
+        .mob-nav {
+            position: fixed;
+            top: 0; right: -100%;
+            width: min(300px, 85vw);
+            height: 100dvh;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 5.5rem 2.5rem 3rem;
+            transition: right 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mob-nav.open { right: 0; }
+        .mob-nav-links {
+            list-style: none;
+            display: flex; flex-direction: column;
+            gap: 1.75rem;
+        }
+        .mob-nav-links a {
+            font-family: var(--f-head);
+            font-size: 1.625rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            transition: color var(--fast);
+        }
+        .mob-nav-links a:hover { color: var(--red); }
+
+        /* ─── Buttons ─── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 2.125rem;
+            font-family: var(--f-body);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            text-decoration: none;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background var(--fast), border-color var(--fast), color var(--fast);
+            white-space: nowrap;
+        }
+        .btn-fill {
+            background: var(--red);
+            border-color: var(--red);
+            color: var(--text);
+        }
+        .btn-fill:hover { background: #ef4a57; border-color: #ef4a57; }
+        .btn-outline {
+            background: transparent;
+            border-color: rgba(240, 237, 232, 0.22);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            background: rgba(240, 237, 232, 0.07);
+            border-color: rgba(240, 237, 232, 0.38);
+        }
+        .btn-full { width: 100%; }
+
+        /* ─── Reveal animations ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+        }
+        .reveal.in { opacity: 1; transform: translateY(0); }
+        .d1 { transition-delay: 0.08s; }
+        .d2 { transition-delay: 0.16s; }
+        .d3 { transition-delay: 0.24s; }
+        .d4 { transition-delay: 0.32s; }
+
+        /* ─── Section scaffold ─── */
+        .section {
+            padding: clamp(5rem, 10vw, 9rem) var(--pad);
+        }
+        .inner {
+            max-width: var(--max);
+            margin: 0 auto;
+        }
+        .sec-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+        .sec-label::before {
+            content: '';
+            display: inline-block;
+            width: 20px; height: 1px;
+            background: var(--red);
+            flex-shrink: 0;
+        }
+
+        /* ─── Hero ─── */
+        #hero {
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            padding-top: 7rem;
+            padding-bottom: 5rem;
+            padding-left: var(--pad);
+            padding-right: var(--pad);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            bottom: -15%;
+            left: -8%;
+            width: 65%;
+            height: 75%;
+            background: radial-gradient(ellipse at 30% 70%,
+                rgba(230, 57, 70, 0.13) 0%,
+                rgba(230, 57, 70, 0.05) 38%,
+                transparent 68%);
+            pointer-events: none;
+        }
+        .hero-glow-top {
+            position: absolute;
+            top: -20%;
+            right: 0;
+            width: 45%;
+            height: 60%;
+            background: radial-gradient(ellipse,
+                rgba(30, 42, 61, 0.6) 0%,
+                transparent 70%);
+            pointer-events: none;
+        }
+        .hero-content {
+            max-width: var(--max);
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+        .hero-hed {
+            font-family: var(--f-head);
+            font-size: clamp(3rem, 6.5vw, 6.25rem);
+            font-weight: 800;
+            line-height: 1.0;
+            letter-spacing: -0.035em;
+            margin-bottom: 1.75rem;
+            max-width: 16ch;
+        }
+        .hero-hed em {
+            font-style: italic;
+            font-weight: 700;
+            color: rgba(240, 237, 232, 0.52);
+        }
+        .hero-sub {
+            font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+            color: var(--muted);
+            max-width: 46ch;
+            line-height: 1.75;
+            margin-bottom: 2.75rem;
+            font-weight: 400;
+        }
+        .hero-ctas {
+            display: flex;
+            gap: 0.875rem;
+            flex-wrap: wrap;
+        }
+
+        /* ─── Marquee ─── */
+        .marquee-wrap {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+            padding: 0.9375rem 0;
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: scroll-left 32s linear infinite;
+        }
+        .marquee-seg {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            white-space: nowrap;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding-right: 0;
+        }
+        .marquee-seg .dot {
+            color: var(--red);
+            margin: 0 1rem;
+            opacity: 0.8;
+        }
+        @keyframes scroll-left {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        /* ─── How It Works ─── */
+        #how {
+            background: var(--bg);
+        }
+        .how-header {
+            font-family: var(--f-head);
+            font-size: clamp(2.375rem, 5vw, 4.25rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.0;
+            margin-bottom: 5rem;
+        }
+        .how-header em {
+            font-style: italic;
+            color: rgba(240, 237, 232, 0.35);
+        }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            position: relative;
+        }
+        .step {
+            padding: 0 3.5rem 0 0;
+            position: relative;
+        }
+        .step + .step {
+            padding-left: 3.5rem;
+            padding-right: 3.5rem;
+            border-left: 1px solid var(--border);
+        }
+        .step:last-child {
+            padding-right: 0;
+        }
+        .step-num {
+            font-family: var(--f-head);
+            font-size: 5.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(230, 57, 70, 0.18);
+            margin-bottom: 1.75rem;
+            user-select: none;
+        }
+        .step-title {
+            font-family: var(--f-head);
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.625rem;
+        }
+        .step-body {
+            font-size: 0.9375rem;
+            color: var(--muted);
+            line-height: 1.72;
+        }
+
+        /* ─── Pricing ─── */
+        #pricing {
+            background: var(--surface);
+        }
+        .pricing-head {
+            font-family: var(--f-head);
+            font-size: clamp(2.375rem, 5vw, 4.25rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.0;
+            margin-bottom: 0.75rem;
+        }
+        .pricing-sub {
+            font-size: 0.9375rem;
+            color: var(--muted);
+            margin-bottom: 4.5rem;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 5fr 6.5fr;
+            gap: 1.25rem;
+            align-items: start;
+        }
+        .card {
+            background: var(--surface-r);
+            border: 1px solid var(--border);
+            padding: 2.75rem;
+        }
+        .card.featured {
+            background: var(--surface-hi);
+            border-color: var(--red);
+            padding: 3.25rem;
+        }
+        .card-badge {
+            display: inline-block;
+            font-size: 0.6375rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--red);
+            border: 1px solid rgba(230, 57, 70, 0.35);
+            padding: 0.2rem 0.7rem;
+            margin-bottom: 1.75rem;
+        }
+        .card-plan {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.875rem;
+        }
+        .card-price {
+            font-family: var(--f-head);
+            font-size: 3.375rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+        .card-price sup {
+            font-size: 1.375rem;
+            font-weight: 500;
+            color: var(--muted);
+            vertical-align: super;
+            font-family: var(--f-body);
+        }
+        .card-price sub {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--muted);
+            vertical-align: baseline;
+            letter-spacing: 0;
+            font-family: var(--f-body);
+        }
+        .card-period {
+            font-size: 0.8125rem;
+            color: var(--muted);
+            margin-bottom: 2.25rem;
+        }
+        .card-rule {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 2rem;
+        }
+        .card-features {
+            list-style: none;
+            display: flex; flex-direction: column;
+            gap: 0.875rem;
+            margin-bottom: 2.5rem;
+        }
+        .card-features li {
+            font-size: 0.9375rem;
+            color: var(--muted-light);
+            display: flex;
+            align-items: baseline;
+            gap: 0.875rem;
+        }
+        .card-features li::before {
+            content: '—';
+            color: var(--red);
+            flex-shrink: 0;
+            font-size: 0.8125rem;
+            opacity: 0.7;
+        }
+
+        /* ─── Why Vizro ─── */
+        #why {
+            background: var(--bg);
+        }
+        .why-header {
+            font-family: var(--f-head);
+            font-size: clamp(2.375rem, 5vw, 4.25rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.0;
+            margin-bottom: 5rem;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        .feat {
+            border-top: 1px solid var(--border);
+            padding: 2.75rem 4rem 2.75rem 0;
+        }
+        .feat:nth-child(even) {
+            padding-left: 4rem;
+            padding-right: 0;
+            border-left: 1px solid var(--border);
+        }
+        .feat-title {
+            font-family: var(--f-head);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.625rem;
+        }
+        .feat-body {
+            font-size: 0.9375rem;
+            color: var(--muted);
+            line-height: 1.68;
+        }
+
+        /* ─── Free Trial CTA ─── */
+        #free-cta {
+            background: var(--surface);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .free-cta-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 60%,
+                rgba(230, 57, 70, 0.09) 0%,
+                transparent 65%);
+            pointer-events: none;
+        }
+        .free-cta-inner {
+            position: relative;
+            z-index: 1;
+        }
+        .free-cta-hed {
+            font-family: var(--f-head);
+            font-size: clamp(2rem, 4.5vw, 3.625rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.08;
+            margin-bottom: 1.25rem;
+        }
+        .free-cta-sub {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 50ch;
+            margin: 0 auto 2.75rem;
+            line-height: 1.72;
+        }
+
+        /* ─── Contact ─── */
+        #contact {
+            background: var(--bg);
+        }
+        .contact-header {
+            font-family: var(--f-head);
+            font-size: clamp(2.375rem, 5vw, 4.25rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.0;
+            margin-bottom: 4.5rem;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.65fr;
+            gap: 6.5rem;
+            align-items: start;
+        }
+        .contact-copy {
+            font-size: 1rem;
+            color: var(--muted);
+            line-height: 1.78;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem 1.75rem;
+        }
+        .fg {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .fg.wide { grid-column: 1 / -1; }
+        .f-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .f-opt {
+            font-weight: 400;
+            opacity: 0.45;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+        .f-input, .f-select, .f-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(240, 237, 232, 0.14);
+            padding: 0.8125rem 0;
+            color: var(--text);
+            font-family: var(--f-body);
+            font-size: 0.9375rem;
+            width: 100%;
+            outline: none;
+            transition: border-color var(--fast);
+            border-radius: 0;
+            -webkit-appearance: none;
+        }
+        .f-input::placeholder, .f-textarea::placeholder {
+            color: rgba(240, 237, 232, 0.18);
+        }
+        .f-input:focus, .f-select:focus, .f-textarea:focus {
+            border-bottom-color: var(--red);
+        }
+        .f-select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%237A8699' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.25rem center;
+            padding-right: 1.5rem;
+        }
+        .f-select option {
+            background: var(--surface);
+            color: var(--text);
+        }
+        .f-textarea {
+            resize: vertical;
+            min-height: 96px;
+            line-height: 1.65;
+        }
+        .f-submit { grid-column: 1 / -1; margin-top: 0.25rem; }
+        .btn-submit {
+            width: 100%;
+            padding: 1.0625rem 2rem;
+            background: var(--red);
+            color: var(--text);
+            font-family: var(--f-body);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.015em;
+            transition: background var(--fast);
+        }
+        .btn-submit:hover { background: #ef4a57; }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .form-ok {
+            display: none;
+            padding: 2.25rem;
+            border: 1px solid rgba(230, 57, 70, 0.22);
+            background: rgba(230, 57, 70, 0.06);
+            text-align: center;
+        }
+        .form-ok.show { display: block; }
+        .form-ok-title {
+            font-family: var(--f-head);
+            font-size: 1.375rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .form-ok-body {
+            font-size: 0.9375rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 4rem var(--pad) 2.25rem;
+        }
+        .foot-inner { max-width: var(--max); margin: 0 auto; }
+        .foot-grid {
+            display: grid;
+            grid-template-columns: 1.75fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3.5rem;
+        }
+        .foot-logo {
+            font-family: var(--f-head);
+            font-size: 1.0625rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            text-decoration: none;
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.625rem;
+        }
+        .foot-tag {
+            font-size: 0.8125rem;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 22ch;
+        }
+        .foot-nav {
+            list-style: none;
+            display: flex; flex-direction: column;
+            gap: 0.75rem;
+        }
+        .foot-nav a {
+            font-size: 0.8125rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color var(--fast);
+        }
+        .foot-nav a:hover { color: var(--text); }
+        .foot-email {
+            font-size: 0.875rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color var(--fast);
+        }
+        .foot-email:hover { color: var(--text); }
+        .foot-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+        .foot-copy {
+            font-size: 0.75rem;
+            color: rgba(240, 237, 232, 0.25);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 1024px) {
+            .steps {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .step + .step {
+                border-left: none;
+                border-top: 1px solid var(--border);
+                padding: 3rem 0 0 0;
+            }
+            .step { padding: 0; }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 560px;
+            }
+
+            .features { grid-template-columns: 1fr; }
+            .feat { padding: 2.5rem 0; }
+            .feat:nth-child(even) {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 3.5rem;
+            }
+
+            .foot-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #nav { padding: 1.25rem 1.5rem; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+
+            .hero-ctas { flex-direction: column; }
+            .btn { width: 100%; }
+
+            .form-grid { grid-template-columns: 1fr; }
+            .fg.wide { grid-column: 1; }
+            .f-submit { grid-column: 1; }
+
+            .foot-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+    <a href="#hero" class="nav-logo">Vizro Media</a>
+    <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="ham" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<div class="mob-overlay" id="overlay"></div>
+<div class="mob-nav" id="mob" aria-hidden="true">
+    <ul class="mob-nav-links">
+        <li><a href="#how"      class="mob-link">How It Works</a></li>
+        <li><a href="#pricing"  class="mob-link">Pricing</a></li>
+        <li><a href="#why"      class="mob-link">Why Us</a></li>
+        <li><a href="#contact"  class="mob-link">Contact</a></li>
+    </ul>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-glow-top" aria-hidden="true"></div>
+    <div class="hero-content">
+        <div class="sec-label reveal">Video Ad Agency</div>
+        <h1 class="hero-hed reveal d1">
+            Video ads that<br>make <em>people stop<br>scrolling.</em>
+        </h1>
+        <p class="hero-sub reveal d2">
+            We produce scroll-stopping TikTok and Instagram video ads for local businesses — delivered in 48 hours at a fraction of what traditional agencies charge.
+        </p>
+        <div class="hero-ctas reveal d3">
+            <a href="#contact" class="btn btn-fill">Get 2 Free Ads</a>
+            <a href="#how"     class="btn btn-outline">See How It Works</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee-track">
+        <!-- duplicated for seamless loop -->
+        <span class="marquee-seg">TikTok Ads<span class="dot">·</span>Instagram Reels<span class="dot">·</span>Facebook Video<span class="dot">·</span>48hr Delivery<span class="dot">·</span>No Contracts<span class="dot">·</span>Local Business Specialists<span class="dot">·</span>Results-Driven<span class="dot">·</span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-seg">TikTok Ads<span class="dot">·</span>Instagram Reels<span class="dot">·</span>Facebook Video<span class="dot">·</span>48hr Delivery<span class="dot">·</span>No Contracts<span class="dot">·</span>Local Business Specialists<span class="dot">·</span>Results-Driven<span class="dot">·</span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-seg">TikTok Ads<span class="dot">·</span>Instagram Reels<span class="dot">·</span>Facebook Video<span class="dot">·</span>48hr Delivery<span class="dot">·</span>No Contracts<span class="dot">·</span>Local Business Specialists<span class="dot">·</span>Results-Driven<span class="dot">·</span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span class="marquee-seg">TikTok Ads<span class="dot">·</span>Instagram Reels<span class="dot">·</span>Facebook Video<span class="dot">·</span>48hr Delivery<span class="dot">·</span>No Contracts<span class="dot">·</span>Local Business Specialists<span class="dot">·</span>Results-Driven<span class="dot">·</span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    </div>
+</div>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how" class="section">
+    <div class="inner">
+        <h2 class="how-header reveal">Three steps<em>.</em></h2>
+        <div class="steps">
+            <div class="step reveal">
+                <div class="step-num" aria-hidden="true">01</div>
+                <h3 class="step-title">Tell us about your business</h3>
+                <p class="step-body">Fill out a quick form about your product, audience, and goals.</p>
+            </div>
+            <div class="step reveal d1">
+                <div class="step-num" aria-hidden="true">02</div>
+                <h3 class="step-title">We get to work</h3>
+                <p class="step-body">Our production team creates scroll-stopping video ads tailored to your brand and audience.</p>
+            </div>
+            <div class="step reveal d2">
+                <div class="step-num" aria-hidden="true">03</div>
+                <h3 class="step-title">You receive ready-to-post content</h3>
+                <p class="step-body">MP4 files with caption copy delivered to your inbox within 48 hours.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section id="pricing" class="section">
+    <div class="inner">
+        <h2 class="pricing-head reveal">Simple pricing.</h2>
+        <p class="pricing-sub reveal d1">No setup fees. No long-term commitments. Cancel anytime.</p>
+        <div class="pricing-grid">
+
+            <!-- Starter -->
+            <div class="card reveal d1">
+                <div class="card-plan">Starter</div>
+                <div class="card-price"><sup>$</sup>500<sub>/mo</sub></div>
+                <div class="card-period">per month</div>
+                <div class="card-rule"></div>
+                <ul class="card-features">
+                    <li>4 video ads per month</li>
+                    <li>Caption copy included</li>
+                    <li>MP4 delivery</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline btn-full">Get Started</a>
+            </div>
+
+            <!-- Growth -->
+            <div class="card featured reveal d2">
+                <div class="card-badge">Most Popular</div>
+                <div class="card-plan">Growth</div>
+                <div class="card-price"><sup>$</sup>1,000<sub>/mo</sub></div>
+                <div class="card-period">per month</div>
+                <div class="card-rule"></div>
+                <ul class="card-features">
+                    <li>8 ads per month</li>
+                    <li>A/B hook variants</li>
+                    <li>Monthly performance report</li>
+                    <li>Strategy call included</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <a href="#contact" class="btn btn-fill btn-full">Get Started</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ WHY VIZRO ═══ -->
+<section id="why" class="section">
+    <div class="inner">
+        <h2 class="why-header reveal">Why Vizro Media.</h2>
+        <div class="features">
+            <div class="feat reveal">
+                <h3 class="feat-title">Fast Turnaround.</h3>
+                <p class="feat-body">Professional video ads delivered to your inbox in 48 hours.</p>
+            </div>
+            <div class="feat reveal d1">
+                <h3 class="feat-title">Built for Local Business.</h3>
+                <p class="feat-body">We know what drives customers through the door in your market.</p>
+            </div>
+            <div class="feat reveal d2">
+                <h3 class="feat-title">Fraction of the Cost.</h3>
+                <p class="feat-body">Agency-quality content without the agency price tag.</p>
+            </div>
+            <div class="feat reveal d3">
+                <h3 class="feat-title">No Long Contracts.</h3>
+                <p class="feat-body">Monthly retainer. Cancel anytime. No risk.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FREE TRIAL CTA ═══ -->
+<section id="free-cta" class="section">
+    <div class="free-cta-glow" aria-hidden="true"></div>
+    <div class="inner free-cta-inner">
+        <h2 class="free-cta-hed reveal">See what we can do<br>before you commit.</h2>
+        <p class="free-cta-sub reveal d1">We'll produce 2 custom video ads for your business completely free. No pitch. No obligation. Just results.</p>
+        <a href="#contact" class="btn btn-fill reveal d2">Claim Your Free Ads</a>
+    </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact" class="section">
+    <div class="inner">
+        <h2 class="contact-header reveal">Let's work<br>together.</h2>
+        <div class="contact-grid">
+            <div class="contact-copy reveal">
+                <p>We work with local businesses that are ready to stop being invisible online. Fill out the form below and we'll reach out within 24 hours to get started on your free ads.</p>
+            </div>
+            <div class="reveal d1">
+                <form id="cform" action="https://formspree.io/f/xpwzgvkd" method="POST">
+                    <div class="form-grid">
+                        <div class="fg">
+                            <label class="f-label" for="fn">First Name</label>
+                            <input class="f-input" type="text" id="fn" name="first_name" placeholder="Jane" required>
+                        </div>
+                        <div class="fg">
+                            <label class="f-label" for="biz">Business Name</label>
+                            <input class="f-input" type="text" id="biz" name="business_name" placeholder="Jane's Salon" required>
+                        </div>
+                        <div class="fg">
+                            <label class="f-label" for="em">Email</label>
+                            <input class="f-input" type="email" id="em" name="email" placeholder="jane@yourbusiness.com" required>
+                        </div>
+                        <div class="fg">
+                            <label class="f-label" for="ph">Phone <span class="f-opt">(optional)</span></label>
+                            <input class="f-input" type="tel" id="ph" name="phone" placeholder="(555) 000-0000">
+                        </div>
+                        <div class="fg wide">
+                            <label class="f-label" for="btype">Business Type</label>
+                            <select class="f-select" id="btype" name="business_type" required>
+                                <option value="" disabled selected>Select your business type</option>
+                                <option value="Restaurant">Restaurant</option>
+                                <option value="Gym">Gym</option>
+                                <option value="Salon">Salon</option>
+                                <option value="Med Spa">Med Spa</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="fg wide">
+                            <label class="f-label" for="desc">Brief description of what you sell</label>
+                            <textarea class="f-textarea" id="desc" name="description" placeholder="Tell us about your business and what you're looking to promote..." required></textarea>
+                        </div>
+                        <div class="f-submit">
+                            <button type="submit" class="btn-submit" id="submit-btn">Get My 2 Free Ads</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="form-ok" id="form-ok" role="status" aria-live="polite">
+                    <div class="form-ok-title">You're in.</div>
+                    <p class="form-ok-body">We'll be in touch within 24 hours to get your free ads started.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+    <div class="foot-inner">
+        <div class="foot-grid">
+            <div>
+                <a href="#hero" class="foot-logo">Vizro Media</a>
+                <p class="foot-tag">Professional video ads for local business.</p>
+            </div>
+            <div>
+                <ul class="foot-nav">
+                    <li><a href="#how">How It Works</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#why">Why Vizro</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="mailto:hello@vizromedia.com" class="foot-email">hello@vizromedia.com</a>
+            </div>
+        </div>
+        <div class="foot-bottom">
+            <span class="foot-copy">© 2026 Vizro Media. All rights reserved.</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+    /* ── Nav scroll ── */
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 72);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* ── Hamburger / mobile nav ── */
+    const ham     = document.getElementById('ham');
+    const mob     = document.getElementById('mob');
+    const overlay = document.getElementById('overlay');
+
+    function openMob() {
+        ham.classList.add('open');
+        ham.setAttribute('aria-expanded', 'true');
+        mob.classList.add('open');
+        mob.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeMob() {
+        ham.classList.remove('open');
+        ham.setAttribute('aria-expanded', 'false');
+        mob.classList.remove('open');
+        mob.setAttribute('aria-hidden', 'true');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    ham.addEventListener('click', () => mob.classList.contains('open') ? closeMob() : openMob());
+    overlay.addEventListener('click', closeMob);
+    document.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', closeMob));
+
+    /* ── Intersection Observer reveal ── */
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('in');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* Immediately reveal hero (above fold) */
+    document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+
+    /* ── Form submission ── */
+    const cform  = document.getElementById('cform');
+    const formOk = document.getElementById('form-ok');
+    const subBtn = document.getElementById('submit-btn');
+
+    cform.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        subBtn.disabled = true;
+        subBtn.textContent = 'Sending…';
+
+        try {
+            const res = await fetch(cform.action, {
+                method: 'POST',
+                body: new FormData(cform),
+                headers: { 'Accept': 'application/json' }
+            });
+            if (res.ok) {
+                cform.style.display = 'none';
+                formOk.classList.add('show');
+            } else {
+                throw new Error('non-ok');
+            }
+        } catch {
+            subBtn.disabled = false;
+            subBtn.textContent = 'Get My 2 Free Ads';
+            alert('Something went wrong. Please email us at hello@vizromedia.com');
+        }
+    });
+</script>
+</body>
+</html>
