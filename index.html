@@ -1199,22 +1199,41 @@
         subBtn.disabled = true;
         subBtn.textContent = 'Sending…';
 
+        // Collect form data as a plain object and POST as JSON.
+        // Formspree's AJAX mode requires Accept: application/json;
+        // sending JSON also avoids multipart/form-data CORS preflight issues.
+        const payload = {};
+        new FormData(cform).forEach((val, key) => { payload[key] = val; });
+
         try {
-            const res = await fetch(cform.action, {
-                method: 'POST',
-                body: new FormData(cform),
-                headers: { 'Accept': 'application/json' }
+            const res  = await fetch(cform.action, {
+                method:  'POST',
+                body:    JSON.stringify(payload),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept':       'application/json',
+                },
             });
+
+            const data = await res.json().catch(() => ({}));
+
             if (res.ok) {
                 cform.style.display = 'none';
                 formOk.classList.add('show');
             } else {
-                throw new Error('non-ok');
+                // Surface Formspree's actual error if available
+                const msg = (data.errors || []).map(err => err.message).join(' ') ||
+                            data.error || `Error ${res.status}`;
+                console.error('Formspree error:', msg, data);
+                subBtn.disabled   = false;
+                subBtn.textContent = 'Get My 2 Free Ads';
+                alert('Submission failed: ' + msg + '\nPlease email us at hello@vizromedia.com');
             }
-        } catch {
-            subBtn.disabled = false;
+        } catch (err) {
+            console.error('Fetch error:', err);
+            subBtn.disabled   = false;
             subBtn.textContent = 'Get My 2 Free Ads';
-            alert('Something went wrong. Please email us at hello@vizromedia.com');
+            alert('Network error — please email us directly at hello@vizromedia.com');
         }
     });
 </script>
