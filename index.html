@@ -761,6 +761,58 @@
             color: rgba(240, 237, 232, 0.25);
         }
 
+        /* ─── FAQ ─── */
+        #faq {
+            background: var(--surface);
+        }
+        .faq-header {
+            font-family: var(--f-head);
+            font-size: clamp(2.375rem, 5vw, 4.25rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.0;
+            margin-bottom: 4rem;
+        }
+        .faq-header em {
+            font-style: italic;
+            color: rgba(240, 237, 232, 0.35);
+        }
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            max-width: 780px;
+        }
+        .faq-item {
+            border-top: 1px solid var(--border);
+            padding: 1.75rem 0;
+        }
+        .faq-item:last-child {
+            border-bottom: 1px solid var(--border);
+        }
+        .faq-q {
+            font-family: var(--f-head);
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.875rem;
+        }
+        .faq-q::before {
+            content: '—';
+            color: var(--red);
+            font-size: 0.875rem;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+        .faq-a {
+            font-size: 0.9375rem;
+            color: var(--muted);
+            line-height: 1.72;
+            padding-left: 1.875rem;
+        }
+
         /* ─── Responsive ─── */
         @media (max-width: 1024px) {
             .steps {
@@ -825,6 +877,7 @@
         <li><a href="#how">How It Works</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#why">Why Us</a></li>
+        <li><a href="#faq">FAQ</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
     <button class="hamburger" id="ham" aria-label="Open menu" aria-expanded="false">
@@ -838,6 +891,7 @@
         <li><a href="#how"      class="mob-link">How It Works</a></li>
         <li><a href="#pricing"  class="mob-link">Pricing</a></li>
         <li><a href="#why"      class="mob-link">Why Us</a></li>
+        <li><a href="#faq"      class="mob-link">FAQ</a></li>
         <li><a href="#contact"  class="mob-link">Contact</a></li>
     </ul>
 </div>
@@ -974,6 +1028,36 @@
     </div>
 </section>
 
+<!-- ═══ FAQ ═══ -->
+<section id="faq" class="section">
+    <div class="inner">
+        <div class="sec-label reveal">FAQ</div>
+        <h2 class="faq-header reveal d1">Questions answered<em>.</em></h2>
+        <div class="faq-list">
+            <div class="faq-item reveal">
+                <div class="faq-q">Do I need to provide video footage?</div>
+                <p class="faq-a">We recommend sending short clips of your business for the most authentic results — but it's not required. We can produce ads without any footage from you.</p>
+            </div>
+            <div class="faq-item reveal d1">
+                <div class="faq-q">How long does it take to receive my ads?</div>
+                <p class="faq-a">We deliver within 48 hours of receiving your intake form.</p>
+            </div>
+            <div class="faq-item reveal d2">
+                <div class="faq-q">What platforms are the ads made for?</div>
+                <p class="faq-a">TikTok, Instagram Reels, and Facebook Video — all in vertical format ready to post.</p>
+            </div>
+            <div class="faq-item reveal d3">
+                <div class="faq-q">Do you post the ads for us?</div>
+                <p class="faq-a">We deliver ready-to-post MP4 files with caption copy. You post on your own accounts.</p>
+            </div>
+            <div class="faq-item reveal d4">
+                <div class="faq-q">Can I cancel anytime?</div>
+                <p class="faq-a">After your initial 3-month commitment you can cancel anytime with 30 days notice.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- ═══ CONTACT ═══ -->
 <section id="contact" class="section">
     <div class="inner">
@@ -983,7 +1067,7 @@
                 <p>We work with local businesses that are ready to stop being invisible online. Fill out the form below and we'll reach out within 24 hours to get started on your free ads.</p>
             </div>
             <div class="reveal d1">
-                <form id="cform" action="https://formspree.io/f/xpwzgvkd" method="POST">
+                <form id="cform" action="https://formspree.io/f/xrejlala" method="POST">
                     <div class="form-grid">
                         <div class="fg">
                             <label class="f-label" for="fn">First Name</label>
@@ -1044,6 +1128,7 @@
                     <li><a href="#how">How It Works</a></li>
                     <li><a href="#pricing">Pricing</a></li>
                     <li><a href="#why">Why Vizro</a></li>
+                    <li><a href="#faq">FAQ</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
