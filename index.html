@@ -1199,20 +1199,18 @@
         subBtn.disabled = true;
         subBtn.textContent = 'Sending…';
 
-        // Collect form data as a plain object and POST as JSON.
-        // Formspree's AJAX mode requires Accept: application/json;
-        // sending JSON also avoids multipart/form-data CORS preflight issues.
-        const payload = {};
-        new FormData(cform).forEach((val, key) => { payload[key] = val; });
+        // Encode as application/x-www-form-urlencoded.
+        // This is a CORS "simple request" (no preflight OPTIONS) — exactly what
+        // a native HTML form POST sends. Keep Accept: application/json so
+        // Formspree returns JSON instead of redirecting to /thanks.
+        const params = new URLSearchParams();
+        new FormData(cform).forEach((val, key) => { params.append(key, val); });
 
         try {
             const res  = await fetch(cform.action, {
                 method:  'POST',
-                body:    JSON.stringify(payload),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept':       'application/json',
-                },
+                body:    params,
+                headers: { 'Accept': 'application/json' },
             });
 
             const data = await res.json().catch(() => ({}));
@@ -1221,17 +1219,16 @@
                 cform.style.display = 'none';
                 formOk.classList.add('show');
             } else {
-                // Surface Formspree's actual error if available
                 const msg = (data.errors || []).map(err => err.message).join(' ') ||
                             data.error || `Error ${res.status}`;
                 console.error('Formspree error:', msg, data);
-                subBtn.disabled   = false;
+                subBtn.disabled    = false;
                 subBtn.textContent = 'Get My 2 Free Ads';
                 alert('Submission failed: ' + msg + '\nPlease email us at hello@vizromedia.com');
             }
         } catch (err) {
             console.error('Fetch error:', err);
-            subBtn.disabled   = false;
+            subBtn.disabled    = false;
             subBtn.textContent = 'Get My 2 Free Ads';
             alert('Network error — please email us directly at hello@vizromedia.com');
         }
