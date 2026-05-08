@@ -74,12 +74,14 @@
         }
 
         .nav-logo {
-            font-family: var(--f-head);
-            font-size: 1.1875rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
             text-decoration: none;
-            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+        .nav-logo img {
+            height: 36px;
+            width: auto;
+            display: block;
         }
 
         .nav-links {
@@ -718,14 +720,14 @@
             margin-bottom: 3.5rem;
         }
         .foot-logo {
-            font-family: var(--f-head);
-            font-size: 1.0625rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
             text-decoration: none;
-            color: var(--text);
-            display: block;
+            display: inline-block;
             margin-bottom: 0.625rem;
+        }
+        .foot-logo img {
+            height: 28px;
+            width: auto;
+            display: block;
         }
         .foot-tag {
             font-size: 0.8125rem;
@@ -872,7 +874,7 @@
 
 <!-- ═══ NAV ═══ -->
 <nav id="nav">
-    <a href="#hero" class="nav-logo">Vizro Media</a>
+    <a href="#hero" class="nav-logo"><img src="/logo.png" alt="Vizro Media" /></a>
     <ul class="nav-links">
         <li><a href="#how">How It Works</a></li>
         <li><a href="#pricing">Pricing</a></li>
@@ -1120,7 +1122,7 @@
     <div class="foot-inner">
         <div class="foot-grid">
             <div>
-                <a href="#hero" class="foot-logo">Vizro Media</a>
+                <a href="#hero" class="foot-logo"><img src="/logo.png" alt="Vizro Media" /></a>
                 <p class="foot-tag">Professional video ads for local business.</p>
             </div>
             <div>
